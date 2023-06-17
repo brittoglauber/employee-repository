@@ -1,4 +1,4 @@
-from django.shortcuts import get_object_or_404
+from django.shortcuts import get_object_or_404, render
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from .models import Employee, Query
@@ -123,3 +123,17 @@ def search_query_by_employee_name(request):
     queries = Query.objects.filter(employee_name__icontains=employee_name)
     serializer = QuerySerializer(queries, many=True)
     return Response(serializer.data)
+
+def home(request):
+    return render(request, 'employees/home.html')
+
+def employees(request):
+    new_employee = Employee()
+    new_employee.name = request.POST.get('name')
+    new_employee.save()
+
+    employees = {
+        'employees': Employee.objects.all()
+    }
+
+    return render(request, 'employees/employee.html', employees)
