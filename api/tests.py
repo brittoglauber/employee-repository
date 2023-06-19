@@ -10,7 +10,6 @@ class EmployeeTestCase(APITestCase):
 
         self.employees = Employee.objects.all()
 
-
     def test_get_all_employees(self):
         self.assertEqual(self.employees.count(), 3)
         response = self.client.get('/employee/all/')
@@ -18,7 +17,7 @@ class EmployeeTestCase(APITestCase):
 
     def test_get_one_employee(self):
         for employee in self.employees:
-            response = self.client.get(f'/employee/employee/{employee.id}/')
+            response = self.client.get(f'/employee/{employee.id}/')
             self.assertEqual(response.status_code, status.HTTP_200_OK)
 
     def test_create_employee(self):
@@ -36,7 +35,7 @@ class EmployeeTestCase(APITestCase):
 
     def test_delete_employee(self):
         employee = Employee.objects.create(name='Jhon')
-        response = self.client.delete(f'/employee/employee/{employee.id}/delete/')
+        response = self.client.delete(f'/employee/{employee.id}/delete/')
         self.assertEqual(response.status_code, status.HTTP_202_ACCEPTED)
     
 class QueryTestCase(APITestCase):

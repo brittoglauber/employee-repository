@@ -127,16 +127,8 @@ def search_query_by_employee_name(request):
 def home(request):
     return render(request, 'employees/home.html')
 
-# def employees(request):
-#     new_employee = Employee()
-#     new_employee.name = request.POST.get('name')
-#     new_employee.save()
-
-#     employees = {
-#         'employees': Employee.objects.all()
-#     }
-
-#     return render(request, 'employees/employee.html', employees)
+def registerEmployee(request):
+    return render(request, 'employees/registerEmployee.html')
 
 
 def employees(request):
