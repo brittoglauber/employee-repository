@@ -1,4 +1,4 @@
-from django.shortcuts import get_object_or_404, render
+from django.shortcuts import get_object_or_404, render, HttpResponse
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from .models import Employee, Query
@@ -29,7 +29,7 @@ def add_employee(request):
     
     if employee.is_valid():
         employee.save()
-        return Response(employee.data)
+        return Response(employee.data, status=status.HTTP_201_CREATED)
     else:
         return Response(status=status.HTTP_404_NOT_FOUND)
     
@@ -57,7 +57,7 @@ def view_employee_byId(request, pk):
     
     
 
-@api_view(['POST'])
+@api_view(['PUT'])
 def update_employee(request, pk):
     employee = employee = Employee.objects.get(pk=pk)
     data = EmployeeSerializer(instance=employee, data=request.data)
@@ -127,10 +127,32 @@ def search_query_by_employee_name(request):
 def home(request):
     return render(request, 'employees/home.html')
 
+# def employees(request):
+#     new_employee = Employee()
+#     new_employee.name = request.POST.get('name')
+#     new_employee.save()
+
+#     employees = {
+#         'employees': Employee.objects.all()
+#     }
+
+#     return render(request, 'employees/employee.html', employees)
+
+
 def employees(request):
-    new_employee = Employee()
-    new_employee.name = request.POST.get('name')
-    new_employee.save()
+    if request.method == 'POST':
+        name = request.POST.get('name')
+
+        # Verificar se o usuário já existe no banco de dados
+        existing_employee = Employee.objects.filter(name=name).exists()
+
+        if existing_employee:
+            return HttpResponse("Usuário já existe no banco de dados!")
+
+        # Criar um novo funcionário
+        new_employee = Employee()
+        new_employee.name = name
+        new_employee.save()
 
     employees = {
         'employees': Employee.objects.all()
